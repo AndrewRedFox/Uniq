@@ -57,9 +57,8 @@ public class Uniq {
             }
             in.close();
         } else {
-            try {
+            try(Scanner in = new Scanner(new File(file+".txt"));) {
                 File inputFile = new File(file + ".txt");
-                Scanner in = new Scanner(inputFile);
                 if (!inputFile.exists()) {
                     inputFile.createNewFile();
                 }
@@ -69,7 +68,6 @@ public class Uniq {
                     arr.add(current);
                     argsCandU.add(0);
                 }
-                in.close();
             } catch (IOException e) {
                 System.out.println("ERROR " + e);
             }
@@ -77,12 +75,11 @@ public class Uniq {
     }
 
     public void writeOutputTextToFile() {
-        try {
+        try(PrintWriter pw = new PrintWriter(new File(ofile+".txt"))) {
             File outFile = new File(ofile + ".txt");
             if (!outFile.exists()) {
                 outFile.createNewFile();
             }
-            PrintWriter pw = new PrintWriter(outFile);
             if (unic) {
                 for (int i = 0; i < arr.size(); i++) {
                     if (prefics) {
@@ -104,7 +101,6 @@ public class Uniq {
                     }
                 }
             }
-            pw.close();
         } catch (IOException e) {
             System.out.println("ERROR " + e);
         }
