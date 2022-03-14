@@ -10,7 +10,7 @@ import java.io.*;
 import java.util.Random;
 
 
-public class testsUniq {
+public class TestsUniq {
     @Test
     void autoTest() throws IOException {
         int leftLimit = 33;

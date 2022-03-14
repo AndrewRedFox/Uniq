@@ -1,8 +1,6 @@
 
 import java.io.File;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -12,7 +10,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-public class consoleApp {
+public class Uniq {
 
     private ArrayList<String> arr = new ArrayList<>();
     private ArrayList<Integer> argsCandU = new ArrayList<>();
@@ -24,7 +22,7 @@ public class consoleApp {
     @Option(name = "-c")
     private boolean prefics;
     @Option(name = "-s")
-    private String N = "";
+    private Integer numberOfSymbolsIgnore = 0;
     @Option(name = "-o")
     private String ofile;
     @Argument()
@@ -38,49 +36,47 @@ public class consoleApp {
             System.err.println(e.getMessage());
             System.err.println("java SampleMain [options...] arguments...");
         }
-        if (file != null) {
-            inputFile();
-        } else {
-            readOfConsole();
-        }
 
-        arrayEditor();
-
+        readInput(file);
+        stringEditor();
         if (ofile != null) {
-            outputFile();
+            writeOutputTextToFile();
         } else {
-            toStr();
+            outputStrToConsole();
         }
     }
 
-
-    public void inputFile() {
-        BufferedReader br = null;
-        try {
-            File inputFile = new File(file+".txt");
-            if (!inputFile.exists()) {
-                inputFile.createNewFile();
-            }
-
-            br = new BufferedReader(new FileReader(file+".txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                arr.add(line);
+    public void readInput(String fileName) {
+        if (fileName == null) {
+            Scanner in = new Scanner(System.in);
+            while (in.hasNextLine()) {
+                String current = in.nextLine();
+                if (current.equals("")) break;
+                arr.add(current);
                 argsCandU.add(0);
             }
-
-        } catch (IOException e) {
-            System.out.println("ERROR " + e);
-        } finally {
+            in.close();
+        } else {
             try {
-                br.close();
+                File inputFile = new File(file + ".txt");
+                Scanner in = new Scanner(inputFile);
+                if (!inputFile.exists()) {
+                    inputFile.createNewFile();
+                }
+                while (in.hasNextLine()) {
+                    String current = in.nextLine();
+                    if (current.equals("")) break;
+                    arr.add(current);
+                    argsCandU.add(0);
+                }
+                in.close();
             } catch (IOException e) {
                 System.out.println("ERROR " + e);
             }
         }
     }
 
-    public void outputFile() {
+    public void writeOutputTextToFile() {
         try {
             File outFile = new File(ofile + ".txt");
             if (!outFile.exists()) {
@@ -114,24 +110,17 @@ public class consoleApp {
         }
     }
 
-    public void arrayEditor() {
+    public void stringEditor() {
         int count = 5;
         boolean flag = false;
-        int word = 0;
-        Integer newN;
 
-        if (!N.isEmpty()) {
-            newN = Integer.valueOf(N);
-        } else {
-            newN = 0;
-        }
         if (register) {
             flag = true;
         }
         while (count != 0) {
             count = 0;
             for (int i = 0; i < arr.size() - 1; i++) {
-                if (funcCaseIgnore(arr.get(i), arr.get(i + 1), newN, flag)) {
+                if (funcCaseIgnore(arr.get(i), arr.get(i + 1), numberOfSymbolsIgnore, flag)) {
                     arr.remove(i + 1);
                     count += 1;
                     argsCandU.set(i, argsCandU.get(i) + 1);
@@ -145,11 +134,9 @@ public class consoleApp {
                 argsCandU.set(i, argsCandU.get(i) + 1);
             }
         }
-
-
     }
 
-    public boolean funcCaseIgnore(String str1, String str2, int count, boolean flag) {
+    private boolean funcCaseIgnore(String str1, String str2, int count, boolean flag) {
         if (flag) {
             return str1.substring(count).equalsIgnoreCase(str2.substring(count));
         } else {
@@ -157,23 +144,12 @@ public class consoleApp {
         }
     }
 
-    public void toStr() {
+    public void outputStrToConsole() {
         for (int i = 0; i < arr.size(); i++) {
             StringBuilder str = new StringBuilder();
             str.append(arr.get(i)).append(" " + "\"" + argsCandU.get(i).toString() + "\"");
             System.out.println(str);
         }
-    }
-
-    public void readOfConsole() {
-        Scanner in = new Scanner(System.in);
-        while (in.hasNextLine()) {
-            String current=in.nextLine();
-            if(current.equals("")) break;
-            arr.add(current);
-            argsCandU.add(0);
-        }
-        in.close();
     }
 
 }
