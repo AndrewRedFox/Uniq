@@ -46,16 +46,20 @@ public class Uniq {
         }
     }
 
+    public void someFunctionToDoRead(Scanner in) {
+        while (in.hasNextLine()) {
+            String current = in.nextLine();
+            if (current.equals("")) break;
+            Pair pair = new Pair();
+            pair.set(current, 0);
+            arrOfPair.add(pair);
+        }
+    }
+
     public void readInput(String fileName) {
         if (fileName == null) {
             Scanner in = new Scanner(System.in);
-            while (in.hasNextLine()) {
-                String current = in.nextLine();
-                if (current.equals("")) break;
-                Pair pair = new Pair();
-                pair.set(current, 0);
-                arrOfPair.add(pair);
-            }
+            someFunctionToDoRead(in);
             in.close();
         } else {
             try (Scanner in = new Scanner(new File(file + ".txt"));) {
@@ -63,13 +67,7 @@ public class Uniq {
                 if (!inputFile.exists()) {
                     inputFile.createNewFile();
                 }
-                while (in.hasNextLine()) {
-                    String current = in.nextLine();
-                    if (current.equals("")) break;
-                    Pair pair = new Pair();
-                    pair.set(current, 0);
-                    arrOfPair.add(pair);
-                }
+                someFunctionToDoRead(in);
             } catch (IOException e) {
                 System.out.println("ERROR " + e);
             }
@@ -111,13 +109,13 @@ public class Uniq {
     public void stringEditor() {
 
         boolean flag = false;
-        boolean flagInLine=true;
+        boolean flagInLine = true;
 
         if (register) {
             flag = true;
         }
         while (flagInLine) {
-            flagInLine=false;
+            flagInLine = false;
             for (int i = 0; i < arrOfPair.size() - 1; i++) {
                 if (funcCaseIgnore(arrOfPair.get(i).first, arrOfPair.get(i + 1).first, numberOfSymbolsIgnore, flag)) {
                     arrOfPair.remove(i + 1);
